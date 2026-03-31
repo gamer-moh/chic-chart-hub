@@ -1,24 +1,17 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
+import type { Project } from "@/hooks/useProjects";
 
-const data = [
-  {
-    name: "نظافة مباني الأمانة",
-    total: 1205,
-    elapsed: 1126,
-  },
-  {
-    name: "عقد أداء صيانة المباني والمرافق",
-    total: 1095,
-    elapsed: 973,
-  },
-  {
-    name: "مشروع صيانة مقابر الأمانة",
-    total: 986,
-    elapsed: 210,
-  },
-];
+interface ProjectsBarChartProps {
+  projects: Project[];
+}
 
-const ProjectsBarChart = () => {
+const ProjectsBarChart = ({ projects }: ProjectsBarChartProps) => {
+  const data = projects.map((p) => ({
+    name: p.name.length > 30 ? p.name.slice(0, 30) + "..." : p.name,
+    total: p.duration_days,
+    elapsed: p.elapsed_days,
+  }));
+
   return (
     <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
       <h3 className="text-base font-bold text-foreground mb-6">الموقف العام للمشاريع</h3>
@@ -45,9 +38,7 @@ const ProjectsBarChart = () => {
               fontFamily: "'IBM Plex Sans Arabic'",
             }}
           />
-          <Legend
-            wrapperStyle={{ fontSize: "12px", fontFamily: "'IBM Plex Sans Arabic'" }}
-          />
+          <Legend wrapperStyle={{ fontSize: "12px", fontFamily: "'IBM Plex Sans Arabic'" }} />
           <Bar dataKey="total" name="عمر المشروع" radius={[6, 6, 0, 0]}>
             {data.map((_, index) => (
               <Cell key={index} fill="hsl(var(--chart-teal))" />

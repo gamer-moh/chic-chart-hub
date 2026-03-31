@@ -6,23 +6,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { Project } from "@/hooks/useProjects";
 
-const projects = [
-  {
-    name: "نظافة مباني الأمانة - أمانة منطقة الباحة",
-    value: "14,691,386.16",
-  },
-  {
-    name: "مشروع صيانة مقابر الأمانة",
-    value: "1,587,741.75",
-  },
-  {
-    name: "عقد أداء صيانة المباني والمرافق والمنشآت التابعة لأمانة منطقة الباحة",
-    value: "12,550,065.00",
-  },
-];
+interface ProjectsTableProps {
+  projects: Project[];
+}
 
-const ProjectsTable = () => {
+const ProjectsTable = ({ projects }: ProjectsTableProps) => {
   return (
     <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
       <h3 className="text-base font-bold text-foreground mb-4">تفاصيل المشاريع</h3>
@@ -34,11 +24,11 @@ const ProjectsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {projects.map((project, idx) => (
-            <TableRow key={idx} className="border-border hover:bg-muted/50 transition-colors">
+          {projects.map((project) => (
+            <TableRow key={project.id} className="border-border hover:bg-muted/50 transition-colors">
               <TableCell className="text-sm font-medium text-foreground">{project.name}</TableCell>
               <TableCell className="text-sm font-semibold text-foreground tabular-nums">
-                {project.value}
+                {Number(project.contract_value).toLocaleString()}
               </TableCell>
             </TableRow>
           ))}
