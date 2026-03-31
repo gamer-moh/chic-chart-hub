@@ -53,7 +53,7 @@ const Landing = () => {
       {/* Center content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
         <div className="flex items-center gap-5 mb-10">
-          <div className="w-24 h-24 md:w-28 md:h-28 bg-white/90 rounded-2xl flex items-center justify-center shadow-xl p-3">
+          <div className="w-24 h-24 md:w-28 md:h-28 bg-white/90 rounded-2xl flex items-center justify-center shadow-xl p-1">
             <img src={albahLogo} alt="أمانة منطقة الباحة" className="w-full h-full object-contain" />
           </div>
           <div className="text-primary-foreground text-right">
