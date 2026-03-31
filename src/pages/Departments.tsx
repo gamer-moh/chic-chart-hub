@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Building2, ArrowLeft, ChevronLeft, Route, Wrench, FlaskConical, Lightbulb, Headset, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 
 const iconMap: Record<string, React.ReactNode> = {
   road: <Route className="w-8 h-8" />,
