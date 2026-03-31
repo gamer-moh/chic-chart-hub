@@ -14,6 +14,106 @@ export type Database = {
   }
   public: {
     Tables: {
+      departments: {
+        Row: {
+          created_at: string
+          icon: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          icon?: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          icon?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      project_activities: {
+        Row: {
+          contract_quantity: number
+          created_at: string
+          description: string
+          executed_quantity: number
+          id: string
+          location_name: string | null
+          project_id: string
+          remaining_quantity: number
+        }
+        Insert: {
+          contract_quantity?: number
+          created_at?: string
+          description: string
+          executed_quantity?: number
+          id?: string
+          location_name?: string | null
+          project_id: string
+          remaining_quantity?: number
+        }
+        Update: {
+          contract_quantity?: number
+          created_at?: string
+          description?: string
+          executed_quantity?: number
+          id?: string
+          location_name?: string | null
+          project_id?: string
+          remaining_quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_documents: {
+        Row: {
+          created_at: string
+          file_type: string
+          file_url: string
+          id: string
+          project_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          file_type?: string
+          file_url: string
+          id?: string
+          project_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          project_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_locations: {
         Row: {
           created_at: string
@@ -52,50 +152,117 @@ export type Database = {
           },
         ]
       }
+      project_staff: {
+        Row: {
+          count: number
+          created_at: string
+          id: string
+          project_id: string
+          role: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          id?: string
+          project_id: string
+          role: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          id?: string
+          project_id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_staff_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           actual_progress: number
           contract_value: number
+          contractor_name: string | null
           created_at: string
+          department_id: string | null
           duration_days: number
           elapsed_days: number
           end_date: string
           id: string
+          last_extract_number: number | null
           name: string
           planned_progress: number
+          remaining_days: number | null
           start_date: string
           status: string
+          total_penalties: number | null
           updated_at: string
+          weekly_actual_progress: number | null
+          weekly_planned_progress: number | null
+          work_hours_weekly: number | null
+          workers_count: number | null
         }
         Insert: {
           actual_progress?: number
           contract_value?: number
+          contractor_name?: string | null
           created_at?: string
+          department_id?: string | null
           duration_days?: number
           elapsed_days?: number
           end_date: string
           id?: string
+          last_extract_number?: number | null
           name: string
           planned_progress?: number
+          remaining_days?: number | null
           start_date: string
           status?: string
+          total_penalties?: number | null
           updated_at?: string
+          weekly_actual_progress?: number | null
+          weekly_planned_progress?: number | null
+          work_hours_weekly?: number | null
+          workers_count?: number | null
         }
         Update: {
           actual_progress?: number
           contract_value?: number
+          contractor_name?: string | null
           created_at?: string
+          department_id?: string | null
           duration_days?: number
           elapsed_days?: number
           end_date?: string
           id?: string
+          last_extract_number?: number | null
           name?: string
           planned_progress?: number
+          remaining_days?: number | null
           start_date?: string
           status?: string
+          total_penalties?: number | null
           updated_at?: string
+          weekly_actual_progress?: number | null
+          weekly_planned_progress?: number | null
+          work_hours_weekly?: number | null
+          workers_count?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projects_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
