@@ -14,13 +14,6 @@ import {
 import { useState } from "react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
-const STAFF_ROLES = [
-  "مهندس تصميم", "إجمالي العمالة", "إجمالي الكادر",
-  "مهندس زراعي", "مدير المشروع", "مهندس مختبر",
-  "سباك", "مهندس لاندسكيب", "ضابط اتصال",
-  "كهربائي", "مراقب", "مساح",
-];
-
 const ProjectStaff = () => {
   const navigate = useNavigate();
   const { departmentId } = useParams();
@@ -43,7 +36,7 @@ const ProjectStaff = () => {
   const { data: staffData } = useQuery({
     queryKey: ["project_staff", selectedProjectId, departmentId],
     queryFn: async () => {
-      let query = supabase.from("project_staff" as any).select("*");
+      let query = supabase.from("project_staff").select("*");
       if (selectedProjectId !== "all") {
         query = query.eq("project_id", selectedProjectId);
       } else if (projects && projects.length > 0) {
@@ -59,12 +52,13 @@ const ProjectStaff = () => {
 
   const staffByRole = useMemo(() => {
     const map: Record<string, number> = {};
-    STAFF_ROLES.forEach((r) => (map[r] = 0));
     staffData?.forEach((s: any) => {
       map[s.role] = (map[s.role] || 0) + s.count;
     });
     return map;
   }, [staffData]);
+
+  const roles = Object.keys(staffByRole);
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,24 +92,30 @@ const ProjectStaff = () => {
           </SelectContent>
         </Select>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {STAFF_ROLES.map((role) => {
-            const isTotal = role.includes("إجمالي");
-            return (
-              <div
-                key={role}
-                className={`rounded-xl border p-5 text-center shadow-sm ${
-                  isTotal
-                    ? "bg-gradient-to-l from-[hsl(var(--header-gradient-from))] to-[hsl(var(--header-gradient-to))] text-primary-foreground border-transparent"
-                    : "bg-card border-border"
-                }`}
-              >
-                <p className={`text-sm font-bold mb-2 ${isTotal ? "" : "text-foreground"}`}>{role}</p>
-                <p className={`text-3xl font-bold ${isTotal ? "" : "text-primary"}`}>{staffByRole[role] || 0}</p>
-              </div>
-            );
-          })}
-        </div>
+        {roles.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {roles.map((role) => {
+              const isTotal = role.includes("إجمالي");
+              return (
+                <div
+                  key={role}
+                  className={`rounded-xl border p-5 text-center shadow-sm ${
+                    isTotal
+                      ? "bg-gradient-to-l from-[hsl(var(--header-gradient-from))] to-[hsl(var(--header-gradient-to))] text-primary-foreground border-transparent"
+                      : "bg-card border-border"
+                  }`}
+                >
+                  <p className={`text-sm font-bold mb-2 ${isTotal ? "" : "text-foreground"}`}>{role}</p>
+                  <p className={`text-3xl font-bold ${isTotal ? "" : "text-primary"}`}>{staffByRole[role] || 0}</p>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center text-muted-foreground py-12">
+            لا يوجد كادر مسجل بعد
+          </div>
+        )}
       </div>
     </div>
   );
