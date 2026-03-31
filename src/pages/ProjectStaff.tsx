@@ -29,10 +29,10 @@ const ProjectStaff = () => {
   const { data: projects } = useQuery({
     queryKey: ["dept_projects_staff", departmentId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase
         .from("projects")
-        .select("*")
-        .eq("department_id" as any, departmentId!)
+        .select("*") as any)
+        .eq("department_id", departmentId!)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as any[];
