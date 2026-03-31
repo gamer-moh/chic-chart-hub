@@ -44,8 +44,8 @@ const Landing = () => {
             <p className="font-bold text-base">وزارة البلديات والإسكان</p>
             <p className="opacity-70 text-xs">Ministry of Municipalities and Housing</p>
           </div>
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-lg p-1">
-            <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="w-full h-full object-contain" />
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-lg p-1 overflow-hidden">
+            <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="h-full w-full scale-[1.45] object-contain" />
           </div>
         </div>
       </div>
@@ -53,8 +53,8 @@ const Landing = () => {
       {/* Center content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
         <div className="flex items-center gap-5 mb-10">
-          <div className="w-24 h-24 md:w-28 md:h-28 bg-white/90 rounded-2xl flex items-center justify-center shadow-xl p-1">
-            <img src={albahLogo} alt="أمانة منطقة الباحة" className="w-full h-full object-contain" />
+          <div className="w-24 h-24 md:w-28 md:h-28 bg-white/90 rounded-2xl flex items-center justify-center shadow-xl p-1 overflow-hidden">
+            <img src={albahLogo} alt="أمانة منطقة الباحة" className="h-full w-full scale-[1.55] object-contain" />
           </div>
           <div className="text-primary-foreground text-right">
             <p className="text-xl md:text-2xl font-bold">أمانة منطقة الباحة</p>
