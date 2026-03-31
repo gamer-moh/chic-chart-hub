@@ -84,6 +84,8 @@ const ProjectDocuments = () => {
               <div className="h-40 bg-muted flex items-center justify-center overflow-hidden">
                 {doc.file_type === "image" ? (
                   <img src={doc.file_url} alt={doc.title} className="w-full h-full object-cover" />
+                ) : doc.file_type === "pdf" ? (
+                  <iframe src={doc.file_url} title={doc.title} className="w-full h-full" />
                 ) : (
                   <FileText className="w-16 h-16 text-muted-foreground" />
                 )}
@@ -92,7 +94,7 @@ const ProjectDocuments = () => {
                 <p className="font-bold text-foreground text-sm">{doc.title}</p>
                 <div className="flex items-center gap-2 mt-3">
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
-                    <Eye className="w-3 h-3" /> معاينة
+                    <Eye className="w-3 h-3" /> {doc.file_type === "pdf" ? "فتح PDF" : "معاينة"}
                   </a>
                 </div>
               </div>
