@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import StatCard from "@/components/dashboard/StatCard";
 import { Banknote, Users, Clock, Calendar, CheckCircle, AlertTriangle } from "lucide-react";
 
 const ProjectDetails = () => {
@@ -53,11 +52,17 @@ const ProjectDetails = () => {
     setSelectedProjectId(projects[0].id);
   }
 
+  const statusColor = project?.status === "على المسار" ? "bg-primary text-primary-foreground" : "bg-chart-orange text-white";
+  const statusIcon = project?.status === "على المسار"
+    ? <CheckCircle className="w-5 h-5" />
+    : <AlertTriangle className="w-5 h-5" />;
+
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
 
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        {/* Navigation */}
         <div className="flex items-center justify-between">
           <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/staff`)}>
             <ArrowRight className="w-4 h-4 ml-2" />
@@ -70,9 +75,10 @@ const ProjectDetails = () => {
           </Button>
         </div>
 
+        {/* Project Selector */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium text-foreground mb-1 block">اسم المشروع:</label>
+            <label className="text-sm font-medium text-foreground mb-1 block text-right">اسم المشروع:</label>
             <Select value={selectedProjectId} onValueChange={setSelectedProjectId}>
               <SelectTrigger className="bg-card">
                 <SelectValue placeholder="اختر المشروع" />
@@ -85,8 +91,8 @@ const ProjectDetails = () => {
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground mb-1 block">رقم آخر مستخلص:</label>
-            <div className="bg-card border border-border rounded-lg px-4 py-2 text-foreground">
+            <label className="text-sm font-medium text-foreground mb-1 block text-right">رقم آخر مستخلص:</label>
+            <div className="bg-card border border-border rounded-lg px-4 py-2.5 text-foreground text-center font-bold">
               {project?.last_extract_number || 0}
             </div>
           </div>
@@ -94,61 +100,110 @@ const ProjectDetails = () => {
 
         {project && (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-              <StatCard label="اسم المقاول" value={project.contractor_name || "-"} icon={<Users className="w-4 h-4" />} />
-              <StatCard label="قيمة العقد" value={Number(project.contract_value).toLocaleString()} icon={<Banknote className="w-4 h-4" />} />
-              <StatCard label="عدد العمالة" value={project.workers_count || 0} icon={<Users className="w-4 h-4" />} />
-              <StatCard label="ساعات العمل" value={project.work_hours_weekly || 0} icon={<Clock className="w-4 h-4" />} />
-              <StatCard label="المنقضية" value={project.elapsed_days} icon={<Calendar className="w-4 h-4" />} />
-              <StatCard label="المتبقية" value={project.remaining_days || 0} icon={<Calendar className="w-4 h-4" />} />
-              <StatCard
-                label="الحالة"
-                value={project.status}
-                icon={project.status === "على المسار"
-                  ? <CheckCircle className="w-4 h-4 text-chart-green" />
-                  : <AlertTriangle className="w-4 h-4 text-chart-orange" />}
-                accent={project.status === "على المسار"}
-              />
-              <StatCard label="الغرامات" value={Number(project.total_penalties || 0).toLocaleString()} icon={<Banknote className="w-4 h-4" />} />
-            </div>
+            {/* Info Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="bg-card rounded-xl border border-border p-4 shadow-sm text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                  <Users className="w-4 h-4" />
+                  <span>اسم المقاول</span>
+                </div>
+                <p className="text-lg font-bold text-foreground">{project.contractor_name || "-"}</p>
+              </div>
 
-            <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <p className="text-sm text-muted-foreground">الإنجاز الأسبوعي الفعلي</p>
-                  <p className="text-2xl font-bold text-primary">{Number(project.weekly_actual_progress || 0).toFixed(3)}</p>
+              <div className="bg-card rounded-xl border border-border p-4 shadow-sm text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                  <Banknote className="w-4 h-4" />
+                  <span>قيمة العقد</span>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">الإنجاز الأسبوعي المخطط</p>
-                  <p className="text-2xl font-bold text-chart-green">{Number(project.weekly_planned_progress || 0).toFixed(3)}</p>
+                <p className="text-lg font-bold text-foreground">{Number(project.contract_value).toLocaleString()}</p>
+              </div>
+
+              <div className="bg-card rounded-xl border border-border p-4 shadow-sm text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                  <Users className="w-4 h-4" />
+                  <span>عدد العمالة</span>
                 </div>
+                <p className="text-lg font-bold text-foreground">{project.workers_count || 0}</p>
+              </div>
+
+              <div className="bg-card rounded-xl border border-border p-4 shadow-sm text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                  <Clock className="w-4 h-4" />
+                  <span>ساعات العمل</span>
+                </div>
+                <p className="text-lg font-bold text-foreground">{project.work_hours_weekly || 0}</p>
+              </div>
+
+              <div className="bg-card rounded-xl border border-border p-4 shadow-sm text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                  <Calendar className="w-4 h-4" />
+                  <span>المنقضية</span>
+                </div>
+                <p className="text-lg font-bold text-foreground">{project.elapsed_days}</p>
+              </div>
+
+              <div className="bg-card rounded-xl border border-border p-4 shadow-sm text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                  <Calendar className="w-4 h-4" />
+                  <span>المتبقية</span>
+                </div>
+                <p className="text-lg font-bold text-foreground">{project.remaining_days || 0}</p>
+              </div>
+
+              <div className={`rounded-xl border border-border p-4 shadow-sm text-center space-y-2 ${statusColor}`}>
+                <div className="flex items-center justify-center gap-2 text-xs opacity-90">
+                  {statusIcon}
+                  <span>الحالة</span>
+                </div>
+                <p className="text-xl font-bold">{project.status}</p>
+              </div>
+
+              <div className="bg-card rounded-xl border border-border p-4 shadow-sm text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                  <Banknote className="w-4 h-4" />
+                  <span>الغرامات</span>
+                </div>
+                <p className="text-lg font-bold text-foreground">{Number(project.total_penalties || 0).toLocaleString()}</p>
               </div>
             </div>
 
+            {/* Weekly Progress */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm text-center">
+                <p className="text-sm text-muted-foreground mb-2">الإنجاز الأسبوعي الفعلي</p>
+                <p className="text-3xl font-bold text-primary">{Number(project.weekly_actual_progress || 0).toFixed(3)}</p>
+              </div>
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm text-center">
+                <p className="text-sm text-muted-foreground mb-2">الإنجاز الأسبوعي المخطط</p>
+                <p className="text-3xl font-bold text-chart-green">{Number(project.weekly_planned_progress || 0).toFixed(3)}</p>
+              </div>
+            </div>
+
+            {/* Activities Table */}
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-border">
-                <h3 className="font-bold text-foreground">الأنشطة الرئيسية للمشروع / البنود</h3>
+              <div className="p-5 border-b border-border">
+                <h3 className="font-bold text-foreground text-lg">الأنشطة الرئيسية للمشروع / البنود</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-muted/50 text-muted-foreground">
-                      <th className="p-3 text-right">النشاط</th>
-                      <th className="p-3 text-center">كمية العقد</th>
-                      <th className="p-3 text-center">إجمالي المنفذ</th>
-                      <th className="p-3 text-center">الكمية المتبقية</th>
-                      <th className="p-3 text-right">اسم الموقع</th>
+                      <th className="p-4 text-right font-semibold">النشاط</th>
+                      <th className="p-4 text-center font-semibold">كمية العقد</th>
+                      <th className="p-4 text-center font-semibold">إجمالي المنفذ</th>
+                      <th className="p-4 text-center font-semibold">الكمية المتبقية</th>
+                      <th className="p-4 text-right font-semibold">اسم الموقع</th>
                     </tr>
                   </thead>
                   <tbody>
                     {activities && activities.length > 0 ? (
                       activities.map((act: any) => (
-                        <tr key={act.id} className="border-t border-border hover:bg-muted/30">
-                          <td className="p-3 text-right text-xs leading-relaxed max-w-xs">{act.description}</td>
-                          <td className="p-3 text-center">{Number(act.contract_quantity)}</td>
-                          <td className="p-3 text-center">{Number(act.executed_quantity)}</td>
-                          <td className="p-3 text-center">{Number(act.remaining_quantity)}</td>
-                          <td className="p-3 text-right">{act.location_name || "-"}</td>
+                        <tr key={act.id} className="border-t border-border hover:bg-muted/30 transition-colors">
+                          <td className="p-4 text-right text-sm leading-relaxed max-w-xs">{act.description}</td>
+                          <td className="p-4 text-center font-medium">{Number(act.contract_quantity).toLocaleString()}</td>
+                          <td className="p-4 text-center font-medium">{Number(act.executed_quantity).toLocaleString()}</td>
+                          <td className="p-4 text-center font-medium">{Number(act.remaining_quantity).toLocaleString()}</td>
+                          <td className="p-4 text-right">{act.location_name || "-"}</td>
                         </tr>
                       ))
                     ) : (

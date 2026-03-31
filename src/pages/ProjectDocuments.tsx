@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, Upload, FileText, Trash2, Eye } from "lucide-react";
+import { ArrowRight, FileText, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -13,19 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 const ProjectDocuments = () => {
   const navigate = useNavigate();
   const { departmentId } = useParams();
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
-  const [title, setTitle] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
 
   const { data: projects } = useQuery({
     queryKey: ["dept_projects_docs", departmentId],
@@ -55,54 +46,9 @@ const ProjectDocuments = () => {
     enabled: !!selectedProjectId,
   });
 
-  const deleteDoc = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("project_documents" as any).delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["project_documents"] });
-      toast.success("تم حذف المستند");
-    },
-  });
-
   if (!selectedProjectId && projects && projects.length > 0) {
     setSelectedProjectId(projects[0].id);
   }
-
-  const handleUpload = async () => {
-    if (!file || !title || !selectedProjectId) {
-      toast.error("يرجى ملء جميع الحقول");
-      return;
-    }
-    setUploading(true);
-    try {
-      const ext = file.name.split(".").pop();
-      const path = `${selectedProjectId}/${Date.now()}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("project-documents").upload(path, file);
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage.from("project-documents").getPublicUrl(path);
-      const fileType = file.type.startsWith("image/") ? "image" : "pdf";
-
-      const { error: insertError } = await supabase.from("project_documents" as any).insert({
-        project_id: selectedProjectId,
-        title,
-        file_url: urlData.publicUrl,
-        file_type: fileType,
-      });
-      if (insertError) throw insertError;
-
-      queryClient.invalidateQueries({ queryKey: ["project_documents"] });
-      setTitle("");
-      setFile(null);
-      toast.success("تم رفع المستند بنجاح");
-    } catch (error: any) {
-      toast.error(error.message || "خطأ في رفع الملف");
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -132,28 +78,6 @@ const ProjectDocuments = () => {
           </SelectContent>
         </Select>
 
-        {user && selectedProjectId && (
-          <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-4">
-            <h3 className="font-bold text-foreground">رفع مستند جديد</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label>عنوان المستند</Label>
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="مثال: محضر ترسية" className="mt-1" />
-              </div>
-              <div>
-                <Label>الملف (صورة أو PDF)</Label>
-                <Input type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="mt-1" />
-              </div>
-              <div className="flex items-end">
-                <Button onClick={handleUpload} disabled={uploading} className="w-full">
-                  <Upload className="w-4 h-4 ml-2" />
-                  {uploading ? "جاري الرفع..." : "رفع"}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {documents && documents.length > 0 ? documents.map((doc: any) => (
             <div key={doc.id} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -170,11 +94,6 @@ const ProjectDocuments = () => {
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                     <Eye className="w-3 h-3" /> معاينة
                   </a>
-                  {user && (
-                    <button onClick={() => deleteDoc.mutate(doc.id)} className="text-xs text-destructive hover:underline flex items-center gap-1 mr-auto">
-                      <Trash2 className="w-3 h-3" /> حذف
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
