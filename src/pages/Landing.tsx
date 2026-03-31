@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import vision2030 from "@/assets/vision2030.png";
+import ministryLogo from "@/assets/ministry.png";
+import albahLogo from "@/assets/albaha-municipality.jpg";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -28,8 +30,8 @@ const Landing = () => {
       {/* Top bar with logos */}
       <div className="relative z-10 flex items-center justify-between px-8 py-6">
         <div className="flex items-center gap-3">
-          <div className="w-14 h-14 bg-primary-foreground/10 backdrop-blur rounded-xl flex items-center justify-center border border-primary-foreground/20">
-            <Building2 className="w-7 h-7 text-primary-foreground" />
+          <div className="w-14 h-14 bg-primary-foreground/10 backdrop-blur rounded-xl flex items-center justify-center border border-primary-foreground/20 overflow-hidden">
+            <img src={vision2030} alt="رؤية 2030" className="w-12 h-12 object-contain" />
           </div>
           <div className="text-primary-foreground text-sm">
             <p className="font-bold">رؤية 2030</p>
@@ -42,8 +44,8 @@ const Landing = () => {
             <p className="font-bold">وزارة البلديات والإسكان</p>
             <p className="opacity-70 text-xs">Ministry of Municipalities and Housing</p>
           </div>
-          <div className="w-14 h-14 bg-primary-foreground/10 backdrop-blur rounded-xl flex items-center justify-center border border-primary-foreground/20">
-            <Building2 className="w-7 h-7 text-primary-foreground" />
+          <div className="w-14 h-14 bg-primary-foreground/10 backdrop-blur rounded-xl flex items-center justify-center border border-primary-foreground/20 overflow-hidden">
+            <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="w-12 h-12 object-contain" />
           </div>
         </div>
       </div>
@@ -51,8 +53,8 @@ const Landing = () => {
       {/* Center content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-20 h-20 bg-primary-foreground/10 backdrop-blur rounded-2xl flex items-center justify-center border border-primary-foreground/20">
-            <Building2 className="w-10 h-10 text-primary-foreground" />
+          <div className="w-20 h-20 bg-primary-foreground/10 backdrop-blur rounded-2xl flex items-center justify-center border border-primary-foreground/20 overflow-hidden">
+            <img src={albahLogo} alt="أمانة منطقة الباحة" className="w-16 h-16 object-contain" />
           </div>
           <div className="text-primary-foreground text-right">
             <p className="text-lg font-bold">أمانة منطقة الباحة</p>
