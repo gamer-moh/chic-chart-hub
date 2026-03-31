@@ -1,7 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Building2, ArrowLeft, ChevronLeft, Route, Wrench, FlaskConical, Lightbulb, Headset } from "lucide-react";
+import { Building2, ArrowLeft, ChevronLeft, Route, Wrench, FlaskConical, Lightbulb, Headset, LogIn, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
 const iconMap: Record<string, React.ReactNode> = {
