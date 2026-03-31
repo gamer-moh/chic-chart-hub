@@ -93,7 +93,7 @@ const ProjectForm = () => {
 
   const onSubmit = async (data: ProjectFormData) => {
     try {
-      const project = await createProject.mutateAsync(data);
+      const project = await createProject.mutateAsync(data as any);
 
       // Add locations
       const validLocations = locations.filter(
