@@ -44,7 +44,7 @@ const Landing = () => {
             <p className="font-bold text-base">وزارة البلديات والإسكان</p>
             <p className="opacity-70 text-xs">Ministry of Municipalities and Housing</p>
           </div>
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-lg p-2">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-lg p-1">
             <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="w-full h-full object-contain" />
           </div>
         </div>
