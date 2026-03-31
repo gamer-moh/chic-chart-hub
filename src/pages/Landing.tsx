@@ -30,7 +30,7 @@ const Landing = () => {
       {/* Top bar with logos */}
       <div className="relative z-10 flex items-center justify-between px-8 md:px-16 py-6">
         <img src={vision2030} alt="رؤية 2030" className="h-16 md:h-20 w-auto object-contain drop-shadow-lg" />
-        <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="h-16 md:h-20 w-auto object-contain drop-shadow-lg" />
+        <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="h-20 md:h-28 w-auto object-contain drop-shadow-lg" />
       </div>
 
       {/* Center content */}
