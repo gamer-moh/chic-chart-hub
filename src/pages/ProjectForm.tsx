@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -60,7 +60,7 @@ const STAFF_ROLES = [
 const ProjectForm = () => {
   const navigate = useNavigate();
   const { departmentId } = useParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const addLocation = useAddLocation();
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
@@ -84,16 +84,25 @@ const ProjectForm = () => {
 
   const startDate = watch("start_date");
   const endDate = watch("end_date");
-  if (startDate && endDate) {
-    const diff = Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
-    if (diff > 0 && watch("duration_days") !== diff) setValue("duration_days", diff);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const diff = Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+      if (diff > 0) setValue("duration_days", diff);
+    }
+  }, [startDate, endDate, setValue]);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [authLoading, user, navigate]);
+
+  if (authLoading) {
+    return <div className="min-h-screen flex items-center justify-center text-muted-foreground">جاري التحميل...</div>;
   }
 
-  // Redirect if not authenticated
-  if (!user) {
-    navigate("/auth");
-    return null;
-  }
+  if (!user) return null;
 
   const onSubmit = async (data: ProjectFormData) => {
     setSaving(true);
