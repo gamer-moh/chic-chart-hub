@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   Plus,
   Trash2,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
