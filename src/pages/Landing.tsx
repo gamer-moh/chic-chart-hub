@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import vision2030 from "@/assets/vision2030.png";
+import ministryLogo from "@/assets/ministry.png";
 import albahLogo from "@/assets/albaha-municipality.png";
 
 const Landing = () => {
@@ -25,12 +27,15 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Center content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
-        <img src={albahLogo} alt="أمانة منطقة الباحة" className="h-28 md:h-36 w-auto object-contain drop-shadow-xl mb-6" />
+      {/* Top bar with logos */}
+      <div className="relative z-10 flex items-center justify-between px-8 md:px-16 py-6">
+        <img src={vision2030} alt="رؤية 2030" className="h-16 md:h-20 w-auto object-contain drop-shadow-lg" />
+        <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="h-16 md:h-20 w-auto object-contain drop-shadow-lg" />
+      </div>
 
-        <p className="text-xl md:text-2xl font-bold text-primary-foreground mb-1">أمانة منطقة الباحة</p>
-        <p className="text-sm text-primary-foreground/70 mb-8">ALBAHA MUNICIPALITY</p>
+      {/* Center content */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-[75vh] px-8 text-center">
+        <img src={albahLogo} alt="أمانة منطقة الباحة" className="h-32 md:h-40 w-auto object-contain drop-shadow-xl mb-10" />
 
         <h1 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4 leading-relaxed">
           وكالة الصيانة والتشغيل
