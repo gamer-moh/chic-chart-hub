@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Calendar, Clock, FolderOpen, Banknote, CheckCircle, AlertTriangle, Plus, Trash2, MapPin, ArrowRight, ArrowLeft,
+  Calendar, Clock, FolderOpen, Banknote, CheckCircle, AlertTriangle, Plus, Trash2, MapPin, ArrowRight, ArrowLeft, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
