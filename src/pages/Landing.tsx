@@ -28,37 +28,37 @@ const Landing = () => {
       </div>
 
       {/* Top bar with logos */}
-      <div className="relative z-10 flex items-center justify-between px-8 py-6">
-        <div className="flex items-center gap-3">
-          <div className="w-14 h-14 bg-primary-foreground/10 backdrop-blur rounded-xl flex items-center justify-center border border-primary-foreground/20 overflow-hidden">
-            <img src={vision2030} alt="رؤية 2030" className="w-12 h-12 object-contain" />
+      <div className="relative z-10 flex items-center justify-between px-8 md:px-16 py-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-lg p-2">
+            <img src={vision2030} alt="رؤية 2030" className="w-full h-full object-contain" />
           </div>
-          <div className="text-primary-foreground text-sm">
-            <p className="font-bold">رؤية 2030</p>
+          <div className="text-primary-foreground text-sm hidden md:block">
+            <p className="font-bold text-base">رؤية 2030</p>
             <p className="opacity-70 text-xs">المملكة العربية السعودية</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="text-primary-foreground text-left text-sm">
-            <p className="font-bold">وزارة البلديات والإسكان</p>
+        <div className="flex items-center gap-4">
+          <div className="text-primary-foreground text-left text-sm hidden md:block">
+            <p className="font-bold text-base">وزارة البلديات والإسكان</p>
             <p className="opacity-70 text-xs">Ministry of Municipalities and Housing</p>
           </div>
-          <div className="w-14 h-14 bg-primary-foreground/10 backdrop-blur rounded-xl flex items-center justify-center border border-primary-foreground/20 overflow-hidden">
-            <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="w-12 h-12 object-contain" />
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-lg p-2">
+            <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="w-full h-full object-contain" />
           </div>
         </div>
       </div>
 
       {/* Center content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-20 h-20 bg-primary-foreground/10 backdrop-blur rounded-2xl flex items-center justify-center border border-primary-foreground/20 overflow-hidden">
-            <img src={albahLogo} alt="أمانة منطقة الباحة" className="w-16 h-16 object-contain" />
+        <div className="flex items-center gap-5 mb-10">
+          <div className="w-24 h-24 md:w-28 md:h-28 bg-white/90 rounded-2xl flex items-center justify-center shadow-xl p-3">
+            <img src={albahLogo} alt="أمانة منطقة الباحة" className="w-full h-full object-contain" />
           </div>
           <div className="text-primary-foreground text-right">
-            <p className="text-lg font-bold">أمانة منطقة الباحة</p>
-            <p className="text-sm opacity-70">ALBAHA MUNICIPALITY</p>
+            <p className="text-xl md:text-2xl font-bold">أمانة منطقة الباحة</p>
+            <p className="text-sm opacity-70 mt-1">ALBAHA MUNICIPALITY</p>
           </div>
         </div>
 
