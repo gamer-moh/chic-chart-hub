@@ -14,7 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      project_locations: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          project_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          project_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_locations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          actual_progress: number
+          contract_value: number
+          created_at: string
+          duration_days: number
+          elapsed_days: number
+          end_date: string
+          id: string
+          name: string
+          planned_progress: number
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          actual_progress?: number
+          contract_value?: number
+          created_at?: string
+          duration_days?: number
+          elapsed_days?: number
+          end_date: string
+          id?: string
+          name: string
+          planned_progress?: number
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          actual_progress?: number
+          contract_value?: number
+          created_at?: string
+          duration_days?: number
+          elapsed_days?: number
+          end_date?: string
+          id?: string
+          name?: string
+          planned_progress?: number
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
