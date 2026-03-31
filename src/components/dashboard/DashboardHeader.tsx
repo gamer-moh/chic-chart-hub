@@ -1,6 +1,10 @@
 import { Building2 } from "lucide-react";
 
-const DashboardHeader = () => {
+interface DashboardHeaderProps {
+  subtitle?: string;
+}
+
+const DashboardHeader = ({ subtitle }: DashboardHeaderProps) => {
   return (
     <div className="bg-gradient-to-l from-[hsl(var(--header-gradient-from))] to-[hsl(var(--header-gradient-to))] text-primary-foreground px-8 py-6 rounded-b-2xl shadow-lg">
       <div className="flex items-center justify-between">
@@ -19,6 +23,9 @@ const DashboardHeader = () => {
           <h1 className="text-xl font-bold tracking-wide">
             مشاريع وكالة الصيانة والتشغيل وتحسين المشهد الحضري
           </h1>
+          {subtitle && (
+            <p className="text-sm opacity-80 mt-1">{subtitle}</p>
+          )}
         </div>
 
         <div className="flex items-center gap-4">
