@@ -15,6 +15,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const Departments = () => {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const { data: departments, isLoading } = useQuery({
     queryKey: ["departments"],
     queryFn: async () => {
@@ -39,7 +40,17 @@ const Departments = () => {
             <h1 className="text-xl font-bold">وكالة الصيانة والتشغيل وتحسين المشهد الحضري</h1>
             <p className="text-sm opacity-70 mt-1">الإدارات</p>
           </div>
-          <div className="w-20" />
+          {user ? (
+            <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10" onClick={signOut}>
+              <LogOut className="w-4 h-4 ml-2" />
+              تسجيل خروج
+            </Button>
+          ) : (
+            <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10" onClick={() => navigate("/auth")}>
+              <LogIn className="w-4 h-4 ml-2" />
+              تسجيل الدخول
+            </Button>
+          )}
         </div>
       </div>
 
