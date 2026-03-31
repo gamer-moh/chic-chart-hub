@@ -21,32 +21,34 @@ const ProjectDetails = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
   const { data: projects } = useQuery({
-    queryKey: ["projects", departmentId],
+    queryKey: ["dept_projects", departmentId],
     queryFn: async () => {
-      let query = supabase.from("projects").select("*");
-      if (departmentId) query = query.eq("department_id", departmentId);
-      const { data, error } = await query.order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("department_id" as any, departmentId!)
+        .order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      return data as any[];
     },
+    enabled: !!departmentId,
   });
 
-  const project = projects?.find((p) => p.id === selectedProjectId);
+  const project = projects?.find((p: any) => p.id === selectedProjectId) as any;
 
   const { data: activities } = useQuery({
     queryKey: ["project_activities", selectedProjectId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("project_activities")
+        .from("project_activities" as any)
         .select("*")
         .eq("project_id", selectedProjectId);
       if (error) throw error;
-      return data;
+      return data as any[];
     },
     enabled: !!selectedProjectId,
   });
 
-  // Auto-select first project
   if (!selectedProjectId && projects && projects.length > 0) {
     setSelectedProjectId(projects[0].id);
   }
@@ -68,7 +70,6 @@ const ProjectDetails = () => {
           </Button>
         </div>
 
-        {/* Project selector and extract number */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium text-foreground mb-1 block">اسم المشروع:</label>
@@ -77,7 +78,7 @@ const ProjectDetails = () => {
                 <SelectValue placeholder="اختر المشروع" />
               </SelectTrigger>
               <SelectContent>
-                {projects?.map((p) => (
+                {projects?.map((p: any) => (
                   <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                 ))}
               </SelectContent>
@@ -93,14 +94,13 @@ const ProjectDetails = () => {
 
         {project && (
           <>
-            {/* Stats row */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
               <StatCard label="اسم المقاول" value={project.contractor_name || "-"} icon={<Users className="w-4 h-4" />} />
               <StatCard label="قيمة العقد" value={Number(project.contract_value).toLocaleString()} icon={<Banknote className="w-4 h-4" />} />
               <StatCard label="عدد العمالة" value={project.workers_count || 0} icon={<Users className="w-4 h-4" />} />
-              <StatCard label="ساعات العمل الأسبوعية" value={project.work_hours_weekly || 0} icon={<Clock className="w-4 h-4" />} />
-              <StatCard label="المدة المنقضية" value={project.elapsed_days} icon={<Calendar className="w-4 h-4" />} />
-              <StatCard label="المدة المتبقية" value={project.remaining_days || 0} icon={<Calendar className="w-4 h-4" />} />
+              <StatCard label="ساعات العمل" value={project.work_hours_weekly || 0} icon={<Clock className="w-4 h-4" />} />
+              <StatCard label="المنقضية" value={project.elapsed_days} icon={<Calendar className="w-4 h-4" />} />
+              <StatCard label="المتبقية" value={project.remaining_days || 0} icon={<Calendar className="w-4 h-4" />} />
               <StatCard
                 label="الحالة"
                 value={project.status}
@@ -109,10 +109,9 @@ const ProjectDetails = () => {
                   : <AlertTriangle className="w-4 h-4 text-chart-orange" />}
                 accent={project.status === "على المسار"}
               />
-              <StatCard label="إجمالي الغرامات" value={Number(project.total_penalties || 0).toLocaleString()} icon={<Banknote className="w-4 h-4" />} />
+              <StatCard label="الغرامات" value={Number(project.total_penalties || 0).toLocaleString()} icon={<Banknote className="w-4 h-4" />} />
             </div>
 
-            {/* Weekly progress */}
             <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
@@ -126,7 +125,6 @@ const ProjectDetails = () => {
               </div>
             </div>
 
-            {/* Activities table */}
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
               <div className="p-4 border-b border-border">
                 <h3 className="font-bold text-foreground">الأنشطة الرئيسية للمشروع / البنود</h3>
@@ -144,7 +142,7 @@ const ProjectDetails = () => {
                   </thead>
                   <tbody>
                     {activities && activities.length > 0 ? (
-                      activities.map((act) => (
+                      activities.map((act: any) => (
                         <tr key={act.id} className="border-t border-border hover:bg-muted/30">
                           <td className="p-3 text-right text-xs leading-relaxed max-w-xs">{act.description}</td>
                           <td className="p-3 text-center">{Number(act.contract_quantity)}</td>
@@ -155,9 +153,7 @@ const ProjectDetails = () => {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-muted-foreground">
-                          لا توجد أنشطة مسجلة
-                        </td>
+                        <td colSpan={5} className="p-8 text-center text-muted-foreground">لا توجد أنشطة مسجلة</td>
                       </tr>
                     )}
                   </tbody>

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ArrowRight, Users } from "lucide-react";
+import { ArrowRight, ArrowLeft, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -27,29 +27,32 @@ const ProjectStaff = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string>("all");
 
   const { data: projects } = useQuery({
-    queryKey: ["projects", departmentId],
+    queryKey: ["dept_projects_staff", departmentId],
     queryFn: async () => {
-      let query = supabase.from("projects").select("*");
-      if (departmentId) query = query.eq("department_id", departmentId);
-      const { data, error } = await query.order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("department_id" as any, departmentId!)
+        .order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      return data as any[];
     },
+    enabled: !!departmentId,
   });
 
   const { data: staffData } = useQuery({
-    queryKey: ["project_staff", selectedProjectId],
+    queryKey: ["project_staff", selectedProjectId, departmentId],
     queryFn: async () => {
-      let query = supabase.from("project_staff").select("*");
+      let query = supabase.from("project_staff" as any).select("*");
       if (selectedProjectId !== "all") {
         query = query.eq("project_id", selectedProjectId);
-      } else if (departmentId && projects) {
-        const ids = projects.map((p) => p.id);
-        if (ids.length > 0) query = query.in("project_id", ids);
+      } else if (projects && projects.length > 0) {
+        const ids = projects.map((p: any) => p.id);
+        query = query.in("project_id", ids);
       }
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+      return data as any[];
     },
     enabled: !!projects,
   });
@@ -57,7 +60,7 @@ const ProjectStaff = () => {
   const staffByRole = useMemo(() => {
     const map: Record<string, number> = {};
     STAFF_ROLES.forEach((r) => (map[r] = 0));
-    staffData?.forEach((s) => {
+    staffData?.forEach((s: any) => {
       map[s.role] = (map[s.role] || 0) + s.count;
     });
     return map;
@@ -89,7 +92,7 @@ const ProjectStaff = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">جميع المشاريع</SelectItem>
-            {projects?.map((p) => (
+            {projects?.map((p: any) => (
               <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
             ))}
           </SelectContent>
@@ -107,12 +110,8 @@ const ProjectStaff = () => {
                     : "bg-card border-border"
                 }`}
               >
-                <p className={`text-sm font-bold mb-2 ${isTotal ? "" : "text-foreground"}`}>
-                  {role}
-                </p>
-                <p className={`text-3xl font-bold ${isTotal ? "" : "text-primary"}`}>
-                  {staffByRole[role] || 0}
-                </p>
+                <p className={`text-sm font-bold mb-2 ${isTotal ? "" : "text-foreground"}`}>{role}</p>
+                <p className={`text-3xl font-bold ${isTotal ? "" : "text-primary"}`}>{staffByRole[role] || 0}</p>
               </div>
             );
           })}
