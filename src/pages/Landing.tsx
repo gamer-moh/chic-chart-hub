@@ -50,7 +50,6 @@ const Landing = () => {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
         <div className="flex items-center gap-5 mb-10">
           <img src={albahLogo} alt="أمانة منطقة الباحة" className="h-20 md:h-24 w-auto object-contain drop-shadow-lg" />
-          </div>
           <div className="text-primary-foreground text-right">
             <p className="text-xl md:text-2xl font-bold">أمانة منطقة الباحة</p>
             <p className="text-sm opacity-70 mt-1">ALBAHA MUNICIPALITY</p>
