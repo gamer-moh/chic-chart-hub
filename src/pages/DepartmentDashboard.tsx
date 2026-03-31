@@ -136,9 +136,13 @@ const DepartmentDashboard = () => {
           </Select>
 
           {user && (
-            <Button onClick={() => navigate(`/departments/${departmentId}/projects/new`)} className="mr-auto">
-              <Plus className="w-4 h-4 ml-2" />
-              إضافة مشروع
+            <Button 
+              onClick={() => navigate(`/departments/${departmentId}/projects/new`)} 
+              className="mr-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg px-6 py-3 text-base font-bold animate-pulse hover:animate-none transition-all"
+              size="lg"
+            >
+              <Plus className="w-5 h-5 ml-2" />
+              ➕ إضافة مشروع جديد
             </Button>
           )}
 
