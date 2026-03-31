@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Calendar, Clock, FolderOpen, Banknote, CheckCircle, AlertTriangle, Plus, Trash2, MapPin, ArrowRight, ArrowLeft,
+  Calendar, Clock, FolderOpen, Banknote, CheckCircle, AlertTriangle, Plus, Trash2, MapPin, ArrowRight, ArrowLeft, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -114,15 +114,24 @@ const DepartmentDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {/* Navigation */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-3">
           <Button variant="outline" onClick={() => navigate("/departments")}>
             <ArrowRight className="w-4 h-4 ml-2" />
             الإدارات
           </Button>
-          <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/staff`)}>
-            كادر المشروع
-            <ArrowLeft className="w-4 h-4 mr-2" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/documents`)}>
+              <FileText className="w-4 h-4 ml-2" />
+              الورقيات
+            </Button>
+            <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/details`)}>
+              تفاصيل المشاريع
+            </Button>
+            <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/staff`)}>
+              كادر المشروع
+              <ArrowLeft className="w-4 h-4 mr-2" />
+            </Button>
+          </div>
         </div>
 
         {/* Controls */}

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, MapPin, ArrowRight } from "lucide-react";
+import { Plus, Trash2, MapPin, ArrowRight, Upload, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,12 +50,18 @@ interface StaffEntry {
   count: string;
 }
 
-const STAFF_ROLES = [
-  "مهندس تصميم", "إجمالي العمالة", "إجمالي الكادر",
-  "مهندس زراعي", "مدير المشروع", "مهندس مختبر",
-  "سباك", "مهندس لاندسكيب", "ضابط اتصال",
-  "كهربائي", "مراقب", "مساح",
-];
+interface ActivityEntry {
+  description: string;
+  contract_quantity: string;
+  executed_quantity: string;
+  remaining_quantity: string;
+  location_name: string;
+}
+
+interface DocumentEntry {
+  title: string;
+  file: File | null;
+}
 
 const ProjectForm = () => {
   const navigate = useNavigate();
@@ -69,9 +75,15 @@ const ProjectForm = () => {
     { name: "", latitude: "", longitude: "", description: "" },
   ]);
 
-  const [staffEntries, setStaffEntries] = useState<StaffEntry[]>(
-    STAFF_ROLES.map((role) => ({ role, count: "0" }))
-  );
+  const [staffEntries, setStaffEntries] = useState<StaffEntry[]>([
+    { role: "", count: "1" },
+  ]);
+
+  const [activities, setActivities] = useState<ActivityEntry[]>([
+    { description: "", contract_quantity: "0", executed_quantity: "0", remaining_quantity: "0", location_name: "" },
+  ]);
+
+  const [documents, setDocuments] = useState<DocumentEntry[]>([]);
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
@@ -126,12 +138,42 @@ const ProjectForm = () => {
       }
 
       // Add staff
-      const validStaff = staffEntries.filter((s) => parseInt(s.count) > 0);
+      const validStaff = staffEntries.filter((s) => s.role.trim() && parseInt(s.count) > 0);
       for (const s of validStaff) {
         await (supabase.from("project_staff" as any).insert({
           project_id: project.id,
           role: s.role,
           count: parseInt(s.count),
+        }) as any);
+      }
+
+      // Add activities
+      const validActivities = activities.filter((a) => a.description.trim());
+      for (const act of validActivities) {
+        await (supabase.from("project_activities" as any).insert({
+          project_id: project.id,
+          description: act.description,
+          contract_quantity: parseFloat(act.contract_quantity) || 0,
+          executed_quantity: parseFloat(act.executed_quantity) || 0,
+          remaining_quantity: parseFloat(act.remaining_quantity) || 0,
+          location_name: act.location_name || null,
+        }) as any);
+      }
+
+      // Upload documents
+      for (const doc of documents) {
+        if (!doc.file || !doc.title) continue;
+        const ext = doc.file.name.split(".").pop();
+        const path = `${project.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: uploadError } = await supabase.storage.from("project-documents").upload(path, doc.file);
+        if (uploadError) { console.error(uploadError); continue; }
+        const { data: urlData } = supabase.storage.from("project-documents").getPublicUrl(path);
+        const fileType = doc.file.type.startsWith("image/") ? "image" : "pdf";
+        await (supabase.from("project_documents" as any).insert({
+          project_id: project.id,
+          title: doc.title,
+          file_url: urlData.publicUrl,
+          file_type: fileType,
         }) as any);
       }
 
@@ -202,26 +244,99 @@ const ProjectForm = () => {
           </div>
         </div>
 
-        {/* Staff */}
+        {/* Staff - Dynamic */}
         <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-5">
-          <h2 className="text-lg font-bold text-foreground">كادر المشروع</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {staffEntries.map((s, idx) => (
-              <div key={s.role}>
-                <Label>{s.role}</Label>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-foreground">كادر المشروع</h2>
+            <Button type="button" variant="outline" size="sm" onClick={() => setStaffEntries([...staffEntries, { role: "", count: "1" }])}>
+              <Plus className="w-4 h-4 ml-1" /> إضافة وظيفة
+            </Button>
+          </div>
+          {staffEntries.map((s, idx) => (
+            <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3 bg-muted/50 rounded-lg">
+              <div className="md:col-span-2">
+                <Label>المسمى الوظيفي</Label>
                 <Input
-                  type="number" min="0"
-                  value={s.count}
+                  value={s.role}
                   onChange={(e) => {
                     const updated = [...staffEntries];
-                    updated[idx].count = e.target.value;
+                    updated[idx].role = e.target.value;
                     setStaffEntries(updated);
                   }}
+                  placeholder="مثال: مهندس مدني"
                   className="mt-1"
                 />
               </div>
-            ))}
+              <div className="flex items-end gap-2">
+                <div className="flex-1">
+                  <Label>العدد</Label>
+                  <Input
+                    type="number" min="0"
+                    value={s.count}
+                    onChange={(e) => {
+                      const updated = [...staffEntries];
+                      updated[idx].count = e.target.value;
+                      setStaffEntries(updated);
+                    }}
+                    className="mt-1"
+                  />
+                </div>
+                {staffEntries.length > 1 && (
+                  <Button type="button" variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => setStaffEntries(staffEntries.filter((_, i) => i !== idx))}>
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Activities / البنود */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-foreground">الأنشطة الرئيسية / البنود</h2>
+            <Button type="button" variant="outline" size="sm" onClick={() => setActivities([...activities, { description: "", contract_quantity: "0", executed_quantity: "0", remaining_quantity: "0", location_name: "" }])}>
+              <Plus className="w-4 h-4 ml-1" /> إضافة بند
+            </Button>
           </div>
+          {activities.map((act, idx) => (
+            <div key={idx} className="p-4 bg-muted/50 rounded-lg space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Label>وصف النشاط</Label>
+                  <Input
+                    value={act.description}
+                    onChange={(e) => { const u = [...activities]; u[idx].description = e.target.value; setActivities(u); }}
+                    placeholder="مثال: أعمال الحفر والردم"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label>كمية العقد</Label>
+                  <Input type="number" step="any" value={act.contract_quantity} onChange={(e) => { const u = [...activities]; u[idx].contract_quantity = e.target.value; setActivities(u); }} className="mt-1" />
+                </div>
+                <div>
+                  <Label>إجمالي المنفذ</Label>
+                  <Input type="number" step="any" value={act.executed_quantity} onChange={(e) => { const u = [...activities]; u[idx].executed_quantity = e.target.value; setActivities(u); }} className="mt-1" />
+                </div>
+                <div>
+                  <Label>الكمية المتبقية</Label>
+                  <Input type="number" step="any" value={act.remaining_quantity} onChange={(e) => { const u = [...activities]; u[idx].remaining_quantity = e.target.value; setActivities(u); }} className="mt-1" />
+                </div>
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label>اسم الموقع</Label>
+                    <Input value={act.location_name} onChange={(e) => { const u = [...activities]; u[idx].location_name = e.target.value; setActivities(u); }} className="mt-1" />
+                  </div>
+                  {activities.length > 1 && (
+                    <Button type="button" variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => setActivities(activities.filter((_, i) => i !== idx))}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Locations */}
@@ -246,6 +361,48 @@ const ProjectForm = () => {
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Documents Upload */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" /> ورقيات المشروع
+            </h2>
+            <Button type="button" variant="outline" size="sm" onClick={() => setDocuments([...documents, { title: "", file: null }])}>
+              <Plus className="w-4 h-4 ml-1" /> إضافة مستند
+            </Button>
+          </div>
+          {documents.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-4">لم تتم إضافة مستندات بعد. اضغط "إضافة مستند" لرفع ملفات.</p>
+          )}
+          {documents.map((doc, idx) => (
+            <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+              <div>
+                <Label>عنوان المستند</Label>
+                <Input
+                  value={doc.title}
+                  onChange={(e) => { const u = [...documents]; u[idx].title = e.target.value; setDocuments(u); }}
+                  placeholder="مثال: محضر ترسية"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label>الملف (صورة أو PDF)</Label>
+                <Input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => { const u = [...documents]; u[idx].file = e.target.files?.[0] || null; setDocuments(u); }}
+                  className="mt-1"
+                />
+              </div>
+              <div className="flex items-end">
+                <Button type="button" variant="ghost" size="icon" className="text-destructive" onClick={() => setDocuments(documents.filter((_, i) => i !== idx))}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           ))}
