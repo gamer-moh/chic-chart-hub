@@ -304,7 +304,5 @@ const Index = () => {
   );
 };
 
-// Need to import MapPin for the empty state
-import { MapPin } from "lucide-react";
 
 export default Index;
