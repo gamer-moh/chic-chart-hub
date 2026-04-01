@@ -1,4 +1,3 @@
-import ministryLogo from "@/assets/ministry.png";
 import albahaLogo from "@/assets/albaha-header.png";
 import vision2030 from "@/assets/vision2030.png";
 
