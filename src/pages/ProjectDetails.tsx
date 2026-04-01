@@ -71,10 +71,18 @@ const ProjectDetails = () => {
             كادر المشروع
           </Button>
           <h2 className="text-xl font-bold text-foreground">تفاصيل المشروع</h2>
-          <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/documents`)}>
-            الورقيات
-            <ArrowLeft className="w-4 h-4 mr-2" />
-          </Button>
+          <div className="flex gap-2">
+            {selectedProjectId && (
+              <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/projects/${selectedProjectId}/edit`)}>
+                <Pencil className="w-4 h-4 ml-1" />
+                تعديل
+              </Button>
+            )}
+            <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/documents`)}>
+              الورقيات
+              <ArrowLeft className="w-4 h-4 mr-2" />
+            </Button>
+          </div>
         </div>
 
         {/* Project Selector */}
