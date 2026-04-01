@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, FileText, Eye } from "lucide-react";
+import { ArrowRight, FileText, Eye, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -32,7 +32,7 @@ const ProjectDocuments = () => {
     enabled: !!departmentId,
   });
 
-  const { data: documents } = useQuery({
+  const { data: documentRows } = useQuery({
     queryKey: ["project_documents", selectedProjectId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -46,11 +46,47 @@ const ProjectDocuments = () => {
     enabled: !!selectedProjectId,
   });
 
+  const { data: storageFiles } = useQuery({
+    queryKey: ["project_documents_storage", selectedProjectId],
+    queryFn: async () => {
+      const { data, error } = await supabase.storage
+        .from("project-documents")
+        .list(selectedProjectId, {
+          limit: 100,
+          sortBy: { column: "created_at", order: "desc" },
+        });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedProjectId,
+  });
+
   useEffect(() => {
     if (!selectedProjectId && projects && projects.length > 0) {
       setSelectedProjectId(projects[0].id);
     }
   }, [projects, selectedProjectId]);
+
+  const documents = useMemo(() => {
+    if (documentRows && documentRows.length > 0) return documentRows;
+    if (!storageFiles || !selectedProjectId) return [];
+
+    return storageFiles
+      .filter((file) => file.name && !file.name.endsWith("/"))
+      .map((file) => {
+        const path = `${selectedProjectId}/${file.name}`;
+        const { data } = supabase.storage.from("project-documents").getPublicUrl(path);
+        const extension = file.name.split(".").pop()?.toLowerCase();
+        const isPdf = extension === "pdf";
+
+        return {
+          id: path,
+          title: file.name.replace(/\.[^.]+$/, ""),
+          file_url: data.publicUrl,
+          file_type: isPdf ? "pdf" : "image",
+        };
+      });
+  }, [documentRows, storageFiles, selectedProjectId]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,17 +119,23 @@ const ProjectDocuments = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {documents && documents.length > 0 ? documents.map((doc: any) => (
             <div key={doc.id} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-              <div className="h-40 bg-muted flex items-center justify-center overflow-hidden">
+              <div className="h-48 bg-muted flex items-center justify-center overflow-hidden">
                 {doc.file_type === "image" ? (
-                  <img src={doc.file_url} alt={doc.title} className="w-full h-full object-cover" />
+                  <img src={doc.file_url} alt={doc.title} className="w-full h-full object-contain bg-background" loading="lazy" />
                 ) : doc.file_type === "pdf" ? (
-                  <iframe src={doc.file_url} title={doc.title} className="w-full h-full" />
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-muted/60 p-4 text-center">
+                    <FileText className="w-12 h-12 text-primary" />
+                    <p className="text-sm font-medium text-foreground">ملف PDF</p>
+                  </div>
                 ) : (
-                  <FileText className="w-16 h-16 text-muted-foreground" />
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-muted/60 p-4 text-center">
+                    <ImageIcon className="w-12 h-12 text-primary" />
+                    <p className="text-sm font-medium text-foreground">مرفق</p>
+                  </div>
                 )}
               </div>
               <div className="p-4">
-                <p className="font-bold text-foreground text-sm">{doc.title}</p>
+                <p className="font-bold text-foreground text-sm break-words">{doc.title}</p>
                 <div className="flex items-center gap-2 mt-3">
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                     <Eye className="w-3 h-3" /> {doc.file_type === "pdf" ? "فتح PDF" : "معاينة"}
