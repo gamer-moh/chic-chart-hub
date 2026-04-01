@@ -32,7 +32,7 @@ const ProjectDocuments = () => {
     enabled: !!departmentId,
   });
 
-  const { data: documents } = useQuery({
+  const { data: documentRows } = useQuery({
     queryKey: ["project_documents", selectedProjectId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -46,11 +46,47 @@ const ProjectDocuments = () => {
     enabled: !!selectedProjectId,
   });
 
+  const { data: storageFiles } = useQuery({
+    queryKey: ["project_documents_storage", selectedProjectId],
+    queryFn: async () => {
+      const { data, error } = await supabase.storage
+        .from("project-documents")
+        .list(selectedProjectId, {
+          limit: 100,
+          sortBy: { column: "created_at", order: "desc" },
+        });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedProjectId,
+  });
+
   useEffect(() => {
     if (!selectedProjectId && projects && projects.length > 0) {
       setSelectedProjectId(projects[0].id);
     }
   }, [projects, selectedProjectId]);
+
+  const documents = useMemo(() => {
+    if (documentRows && documentRows.length > 0) return documentRows;
+    if (!storageFiles || !selectedProjectId) return [];
+
+    return storageFiles
+      .filter((file) => file.name && !file.name.endsWith("/"))
+      .map((file) => {
+        const path = `${selectedProjectId}/${file.name}`;
+        const { data } = supabase.storage.from("project-documents").getPublicUrl(path);
+        const extension = file.name.split(".").pop()?.toLowerCase();
+        const isPdf = extension === "pdf";
+
+        return {
+          id: path,
+          title: file.name.replace(/\.[^.]+$/, ""),
+          file_url: data.publicUrl,
+          file_type: isPdf ? "pdf" : "image",
+        };
+      });
+  }, [documentRows, storageFiles, selectedProjectId]);
 
   return (
     <div className="min-h-screen bg-background">
