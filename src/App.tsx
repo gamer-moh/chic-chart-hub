@@ -10,6 +10,7 @@ import DepartmentDashboard from "./pages/DepartmentDashboard";
 import ProjectStaff from "./pages/ProjectStaff";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProjectDocuments from "./pages/ProjectDocuments";
+import ProjectEdit from "./pages/ProjectEdit";
 import ProjectForm from "./pages/ProjectForm";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/departments/:departmentId/details" element={<ProjectDetails />} />
           <Route path="/departments/:departmentId/documents" element={<ProjectDocuments />} />
           <Route path="/departments/:departmentId/projects/new" element={<ProjectForm />} />
+          <Route path="/departments/:departmentId/projects/:projectId/edit" element={<ProjectEdit />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

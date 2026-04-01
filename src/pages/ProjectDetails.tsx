@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, ArrowLeft, FileText } from "lucide-react";
+import { ArrowRight, ArrowLeft, FileText, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -39,18 +39,20 @@ const ProjectDetails = () => {
     queryKey: ["project_activities", selectedProjectId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("project_activities" as any)
+        .from("project_activities")
         .select("*")
         .eq("project_id", selectedProjectId);
       if (error) throw error;
-      return data as any[];
+      return data;
     },
     enabled: !!selectedProjectId,
   });
 
-  if (!selectedProjectId && projects && projects.length > 0) {
-    setSelectedProjectId(projects[0].id);
-  }
+  useEffect(() => {
+    if (!selectedProjectId && projects && projects.length > 0) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [projects, selectedProjectId]);
 
   const statusColor = project?.status === "على المسار" ? "bg-primary text-primary-foreground" : "bg-chart-orange text-white";
   const statusIcon = project?.status === "على المسار"
@@ -69,10 +71,18 @@ const ProjectDetails = () => {
             كادر المشروع
           </Button>
           <h2 className="text-xl font-bold text-foreground">تفاصيل المشروع</h2>
-          <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/documents`)}>
-            الورقيات
-            <ArrowLeft className="w-4 h-4 mr-2" />
-          </Button>
+          <div className="flex gap-2">
+            {selectedProjectId && (
+              <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/projects/${selectedProjectId}/edit`)}>
+                <Pencil className="w-4 h-4 ml-1" />
+                تعديل
+              </Button>
+            )}
+            <Button variant="outline" onClick={() => navigate(`/departments/${departmentId}/documents`)}>
+              الورقيات
+              <ArrowLeft className="w-4 h-4 mr-2" />
+            </Button>
+          </div>
         </div>
 
         {/* Project Selector */}

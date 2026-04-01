@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,19 +36,21 @@ const ProjectDocuments = () => {
     queryKey: ["project_documents", selectedProjectId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("project_documents" as any)
+        .from("project_documents")
         .select("*")
         .eq("project_id", selectedProjectId)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as any[];
+      return data;
     },
     enabled: !!selectedProjectId,
   });
 
-  if (!selectedProjectId && projects && projects.length > 0) {
-    setSelectedProjectId(projects[0].id);
-  }
+  useEffect(() => {
+    if (!selectedProjectId && projects && projects.length > 0) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [projects, selectedProjectId]);
 
   return (
     <div className="min-h-screen bg-background">
