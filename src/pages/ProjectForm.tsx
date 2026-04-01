@@ -162,19 +162,36 @@ const ProjectForm = () => {
 
       // Upload documents
       for (const doc of documents) {
-        if (!doc.file || !doc.title) continue;
-        const ext = doc.file.name.split(".").pop();
+        if (!doc.file || !doc.title.trim()) continue;
+
+        const ext = doc.file.name.split(".").pop()?.toLowerCase() || "file";
         const path = `${project.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-        const { error: uploadError } = await supabase.storage.from("project-documents").upload(path, doc.file);
-        if (uploadError) { console.error(uploadError); continue; }
+
+        const { error: uploadError } = await supabase.storage
+          .from("project-documents")
+          .upload(path, doc.file, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: doc.file.type || undefined,
+          });
+
+        if (uploadError) {
+          throw new Error(`فشل رفع الملف ${doc.title}: ${uploadError.message}`);
+        }
+
         const { data: urlData } = supabase.storage.from("project-documents").getPublicUrl(path);
-        const fileType = doc.file.type.startsWith("image/") ? "image" : "pdf";
-        await (supabase.from("project_documents" as any).insert({
+        const fileType = doc.file.type === "application/pdf" ? "pdf" : doc.file.type.startsWith("image/") ? "image" : "file";
+
+        const { error: documentInsertError } = await supabase.from("project_documents").insert({
           project_id: project.id,
-          title: doc.title,
+          title: doc.title.trim(),
           file_url: urlData.publicUrl,
           file_type: fileType,
-        }) as any);
+        });
+
+        if (documentInsertError) {
+          throw new Error(`تم رفع الملف ولكن فشل حفظ بياناته: ${documentInsertError.message}`);
+        }
       }
 
       queryClient.invalidateQueries({ queryKey: ["dept_projects"] });
