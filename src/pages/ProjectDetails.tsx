@@ -39,18 +39,20 @@ const ProjectDetails = () => {
     queryKey: ["project_activities", selectedProjectId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("project_activities" as any)
+        .from("project_activities")
         .select("*")
         .eq("project_id", selectedProjectId);
       if (error) throw error;
-      return data as any[];
+      return data;
     },
     enabled: !!selectedProjectId,
   });
 
-  if (!selectedProjectId && projects && projects.length > 0) {
-    setSelectedProjectId(projects[0].id);
-  }
+  useEffect(() => {
+    if (!selectedProjectId && projects && projects.length > 0) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [projects, selectedProjectId]);
 
   const statusColor = project?.status === "على المسار" ? "bg-primary text-primary-foreground" : "bg-chart-orange text-white";
   const statusIcon = project?.status === "على المسار"
