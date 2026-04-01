@@ -11,7 +11,6 @@ const DashboardHeader = ({ subtitle }: DashboardHeaderProps) => {
       <div className="flex items-center justify-between">
         {/* Right side: Ministry + Albaha logos */}
         <div className="flex items-center gap-3">
-          <img src={ministryLogo} alt="وزارة البلديات والإسكان" className="h-14 md:h-16 w-auto object-contain drop-shadow-md" />
           <img src={albahaLogo} alt="أمانة منطقة الباحة" className="h-14 md:h-16 w-auto object-contain drop-shadow-md" />
         </div>
 
