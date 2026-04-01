@@ -119,17 +119,23 @@ const ProjectDocuments = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {documents && documents.length > 0 ? documents.map((doc: any) => (
             <div key={doc.id} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-              <div className="h-40 bg-muted flex items-center justify-center overflow-hidden">
+              <div className="h-48 bg-muted flex items-center justify-center overflow-hidden">
                 {doc.file_type === "image" ? (
-                  <img src={doc.file_url} alt={doc.title} className="w-full h-full object-cover" />
+                  <img src={doc.file_url} alt={doc.title} className="w-full h-full object-contain bg-background" loading="lazy" />
                 ) : doc.file_type === "pdf" ? (
-                  <iframe src={doc.file_url} title={doc.title} className="w-full h-full" />
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-muted/60 p-4 text-center">
+                    <FileText className="w-12 h-12 text-primary" />
+                    <p className="text-sm font-medium text-foreground">ملف PDF</p>
+                  </div>
                 ) : (
-                  <FileText className="w-16 h-16 text-muted-foreground" />
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-muted/60 p-4 text-center">
+                    <ImageIcon className="w-12 h-12 text-primary" />
+                    <p className="text-sm font-medium text-foreground">مرفق</p>
+                  </div>
                 )}
               </div>
               <div className="p-4">
-                <p className="font-bold text-foreground text-sm">{doc.title}</p>
+                <p className="font-bold text-foreground text-sm break-words">{doc.title}</p>
                 <div className="flex items-center gap-2 mt-3">
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                     <Eye className="w-3 h-3" /> {doc.file_type === "pdf" ? "فتح PDF" : "معاينة"}
