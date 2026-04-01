@@ -10,6 +10,7 @@ import DepartmentDashboard from "./pages/DepartmentDashboard";
 import ProjectStaff from "./pages/ProjectStaff";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProjectDocuments from "./pages/ProjectDocuments";
+import ProjectEdit from "./pages/ProjectEdit";
 import ProjectForm from "./pages/ProjectForm";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
