@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, FileText, Eye } from "lucide-react";
+import { ArrowRight, FileText, Eye, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
