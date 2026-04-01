@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, ArrowLeft, FileText } from "lucide-react";
+import { ArrowRight, ArrowLeft, FileText, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
