@@ -1,8 +1,12 @@
+import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import vision2030 from "@/assets/vision2030.png";
 import ministryLogo from "@/assets/ministry.png";
 import albahLogo from "@/assets/albaha-municipality.png";
 
 const Closing = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-bl from-[hsl(200,50%,18%)] via-[hsl(195,65%,25%)] to-[hsl(165,60%,30%)]">
       {/* Decorative geometric patterns */}
@@ -53,6 +57,14 @@ const Closing = () => {
           <p className="text-sm text-primary-foreground/60 mb-1">المطور</p>
           <p className="text-sm text-primary-foreground/60">م/ م. قمر</p>
         </div>
+      </div>
+
+      {/* زر الرجوع */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <Button variant="outline" onClick={() => navigate(-1)} className="bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20">
+          <ArrowRight className="ml-2 h-4 w-4" />
+          رجوع
+        </Button>
       </div>
 
       {/* Bottom decorative */}
