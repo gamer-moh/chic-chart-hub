@@ -51,7 +51,7 @@ const Closing = () => {
         {/* Developer Signature */}
         <div className="border-t border-primary-foreground/30 pt-4 px-8">
           <p className="text-sm text-primary-foreground/60 mb-1">المطور</p>
-          <p className="text-lg font-bold text-primary-foreground">م/ م. قمر</p>
+          <p className="text-sm text-primary-foreground/60">م/ م. قمر</p>
         </div>
       </div>
 
