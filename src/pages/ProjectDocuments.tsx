@@ -17,6 +17,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 const ProjectDocuments = () => {
   const navigate = useNavigate();
   const { departmentId } = useParams();
+  const queryClient = useQueryClient();
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
   const { data: projects } = useQuery({
