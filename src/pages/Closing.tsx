@@ -65,8 +65,8 @@ const Closing = () => {
             رجوع
           </Button>
         </div>
+      </div>
 
-      {/* Bottom decorative */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary-foreground/30 to-transparent" />
     </div>
   );
