@@ -13,6 +13,7 @@ import ProjectDocuments from "./pages/ProjectDocuments";
 import ProjectEdit from "./pages/ProjectEdit";
 import ProjectForm from "./pages/ProjectForm";
 import Auth from "./pages/Auth";
+import Closing from "./pages/Closing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/departments/:departmentId/documents" element={<ProjectDocuments />} />
           <Route path="/departments/:departmentId/projects/new" element={<ProjectForm />} />
           <Route path="/departments/:departmentId/projects/:projectId/edit" element={<ProjectEdit />} />
+          <Route path="/closing" element={<Closing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
