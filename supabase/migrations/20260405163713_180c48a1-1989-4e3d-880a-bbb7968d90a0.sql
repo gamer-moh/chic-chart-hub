@@ -1,0 +1,1 @@
+CREATE POLICY "Auth update documents" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'project-documents') WITH CHECK (bucket_id = 'project-documents');
