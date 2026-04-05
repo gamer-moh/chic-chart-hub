@@ -171,10 +171,13 @@ const ProjectDocuments = () => {
               </div>
               <div className="p-4">
                 <p className="font-bold text-foreground text-sm break-words">{doc.title}</p>
-                <div className="flex items-center gap-2 mt-3">
+                <div className="flex items-center justify-between gap-2 mt-3">
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                     <Eye className="w-3 h-3" /> {doc.file_type === "pdf" ? "فتح PDF" : "معاينة"}
                   </a>
+                  <button onClick={() => handleDeleteDocument(doc)} className="text-xs text-destructive hover:underline flex items-center gap-1">
+                    <Trash2 className="w-3 h-3" /> حذف
+                  </button>
                 </div>
               </div>
             </div>
