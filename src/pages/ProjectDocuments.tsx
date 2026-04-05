@@ -68,24 +68,27 @@ const ProjectDocuments = () => {
   }, [projects, selectedProjectId]);
 
   const documents = useMemo(() => {
-    if (documentRows && documentRows.length > 0) return documentRows;
-    if (!storageFiles || !selectedProjectId) return [];
+    const dbDocs = documentRows || [];
+    const dbUrls = new Set(dbDocs.map((d: any) => d.file_url));
 
-    return storageFiles
+    // Build storage-only docs (not already in DB)
+    const storageDocs = (storageFiles || [])
       .filter((file) => file.name && !file.name.endsWith("/"))
       .map((file) => {
         const path = `${selectedProjectId}/${file.name}`;
         const { data } = supabase.storage.from("project-documents").getPublicUrl(path);
         const extension = file.name.split(".").pop()?.toLowerCase();
         const isPdf = extension === "pdf";
-
         return {
           id: path,
           title: file.name.replace(/\.[^.]+$/, ""),
           file_url: data.publicUrl,
           file_type: isPdf ? "pdf" : "image",
         };
-      });
+      })
+      .filter((doc) => !dbUrls.has(doc.file_url));
+
+    return [...dbDocs, ...storageDocs];
   }, [documentRows, storageFiles, selectedProjectId]);
 
   return (
