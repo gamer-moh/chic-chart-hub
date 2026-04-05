@@ -13,6 +13,7 @@ import ProjectDocuments from "./pages/ProjectDocuments";
 import ProjectEdit from "./pages/ProjectEdit";
 import ProjectForm from "./pages/ProjectForm";
 import Auth from "./pages/Auth";
+import Closing from "./pages/Closing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
