@@ -59,6 +59,14 @@ const Closing = () => {
         </div>
       </div>
 
+      {/* زر الرجوع */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <Button variant="outline" onClick={() => navigate(-1)} className="bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20">
+          <ArrowRight className="ml-2 h-4 w-4" />
+          رجوع
+        </Button>
+      </div>
+
       {/* Bottom decorative */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary-foreground/30 to-transparent" />
     </div>
