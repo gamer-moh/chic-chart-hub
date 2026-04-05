@@ -34,6 +34,7 @@ const App = () => (
           <Route path="/departments/:departmentId/documents" element={<ProjectDocuments />} />
           <Route path="/departments/:departmentId/projects/new" element={<ProjectForm />} />
           <Route path="/departments/:departmentId/projects/:projectId/edit" element={<ProjectEdit />} />
+          <Route path="/closing" element={<Closing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
