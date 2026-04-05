@@ -69,11 +69,39 @@ const ProjectDocuments = () => {
     }
   }, [projects, selectedProjectId]);
 
+  const handleDeleteDocument = async (doc: any) => {
+    try {
+      // Extract storage path from URL or id
+      const isStorageOnly = typeof doc.id === "string" && doc.id.includes("/");
+      const storagePath = isStorageOnly ? doc.id : null;
+
+      // Delete from DB if it has a uuid id
+      if (!isStorageOnly && doc.id) {
+        await supabase.from("project_documents").delete().eq("id", doc.id);
+      }
+
+      // Delete from storage - try to extract path from file_url
+      if (doc.file_url) {
+        const urlParts = doc.file_url.split("/project-documents/");
+        if (urlParts[1]) {
+          await supabase.storage.from("project-documents").remove([decodeURIComponent(urlParts[1])]);
+        }
+      } else if (storagePath) {
+        await supabase.storage.from("project-documents").remove([storagePath]);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["project_documents", selectedProjectId] });
+      queryClient.invalidateQueries({ queryKey: ["project_documents_storage", selectedProjectId] });
+      toast.success("تم حذف المستند بنجاح");
+    } catch {
+      toast.error("خطأ في حذف المستند");
+    }
+  };
+
   const documents = useMemo(() => {
     const dbDocs = documentRows || [];
     const dbUrls = new Set(dbDocs.map((d: any) => d.file_url));
 
-    // Build storage-only docs (not already in DB)
     const storageDocs = (storageFiles || [])
       .filter((file) => file.name && !file.name.endsWith("/"))
       .map((file) => {
