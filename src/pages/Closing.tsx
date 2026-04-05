@@ -6,6 +6,7 @@ import ministryLogo from "@/assets/ministry.png";
 import albahLogo from "@/assets/albaha-municipality.png";
 
 const Closing = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-bl from-[hsl(200,50%,18%)] via-[hsl(195,65%,25%)] to-[hsl(165,60%,30%)]">
       {/* Decorative geometric patterns */}
