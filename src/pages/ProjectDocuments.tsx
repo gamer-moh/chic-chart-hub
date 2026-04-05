@@ -105,7 +105,9 @@ const ProjectDocuments = () => {
             <FileText className="w-5 h-5 text-primary" />
             ورقيات المشروع
           </h2>
-          <div className="w-32" />
+          <Button variant="outline" onClick={() => navigate("/closing")}>
+            الخاتمة
+          </Button>
         </div>
 
         <Select value={selectedProjectId} onValueChange={setSelectedProjectId}>
