@@ -14,11 +14,9 @@ const Closing = () => {
             style={{
               width: `${120 + i * 80}px`,
               height: `${120 + i * 80}px`,
-              top: `${50 - (120 + i * 80) / 2}%`,
-              left: `${50 - (120 + i * 80) / 2}%`,
-              transform: "translate(-50%, -50%)",
               top: "50%",
               left: "50%",
+              transform: `translate(-50%, -50%) scale(${1 + i * 0.3})`,
             }}
           />
         ))}
